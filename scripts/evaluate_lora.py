@@ -23,20 +23,21 @@ def run_mflux(
     lora_scale: float = 0.8,
     steps: int = 20,
     seed: int = 42,
-    quantize: int = 8,
+    quantize: int | None = None,
 ) -> bool:
     """Run MFLUX to generate a single image."""
     cmd = [
         "mflux-generate",
         "--prompt", prompt,
-        "--model", "dev",
+        "--model", "flux2-klein-base-4b",
         "--steps", str(steps),
         "--seed", str(seed),
-        "-q", str(quantize),
         "--lora-paths", str(lora_path),
         "--lora-scales", str(lora_scale),
         "--output", str(output_path),
     ]
+    if quantize is not None:
+        cmd.extend(["-q", str(quantize)])
     result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode != 0:
         print(f"  MFLUX error: {result.stderr[:200]}")
@@ -78,7 +79,7 @@ def main():
     parser.add_argument("--steps", type=int, default=20, help="Inference steps (default: 20)")
     parser.add_argument("--scale", type=float, default=0.8, help="LoRA scale (default: 0.8)")
     parser.add_argument("--seed", type=int, default=42, help="Random seed (default: 42)")
-    parser.add_argument("-q", "--quantize", type=int, default=8, help="Quantization bits (default: 8)")
+    parser.add_argument("-q", "--quantize", type=int, default=None, help="Quantization bits (default: None)")
     args = parser.parse_args()
 
     if not args.lora_path.exists():
