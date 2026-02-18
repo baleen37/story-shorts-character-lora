@@ -1,0 +1,53 @@
+{
+  "description": "Test prompts for character LoRA validation. Use {trigger} as placeholder for the character trigger word.",
+  "categories": [
+    {
+      "name": "basic",
+      "description": "Standard poses and angles for baseline consistency check",
+      "prompts": [
+        {"name": "front_neutral", "text": "{trigger}, front view, neutral expression, white background, flat illustration style, clean linework"},
+        {"name": "front_smile", "text": "{trigger}, front view, smiling warmly, white background, flat illustration style"},
+        {"name": "three_quarter_left", "text": "{trigger}, three-quarter view facing left, neutral expression, simple background"},
+        {"name": "three_quarter_right", "text": "{trigger}, three-quarter view facing right, slight smile, simple background"},
+        {"name": "side_profile", "text": "{trigger}, side profile view, looking ahead, minimal background, flat style"},
+        {"name": "full_body_standing", "text": "{trigger}, full body, standing pose, arms at sides, white background, flat illustration"},
+        {"name": "waist_up", "text": "{trigger}, waist-up shot, relaxed pose, soft pastel background, clean lines"},
+        {"name": "head_closeup", "text": "{trigger}, head closeup, looking directly at viewer, white background"},
+        {"name": "back_view", "text": "{trigger}, back view, looking over shoulder, simple background, flat style"},
+        {"name": "slight_tilt", "text": "{trigger}, head slightly tilted, curious expression, white background, vector style"}
+      ]
+    },
+    {
+      "name": "storytelling",
+      "description": "Scene-based prompts simulating story short scenarios",
+      "prompts": [
+        {"name": "reading_book", "text": "{trigger}, sitting and reading a book, cozy room background, warm lighting, flat illustration"},
+        {"name": "walking_street", "text": "{trigger}, walking down a city street, daytime, buildings in background, flat style"},
+        {"name": "talking_friend", "text": "{trigger}, talking with a friend, cafe setting, two coffee cups on table, flat illustration"},
+        {"name": "looking_window", "text": "{trigger}, looking out a window, rainy day, thoughtful expression, soft colors"},
+        {"name": "cooking_kitchen", "text": "{trigger}, cooking in a kitchen, holding a spatula, colorful ingredients, flat style"},
+        {"name": "running_park", "text": "{trigger}, running in a park, morning light, trees in background, dynamic pose"},
+        {"name": "studying_desk", "text": "{trigger}, studying at a desk, books and laptop, focused expression, flat illustration"},
+        {"name": "phone_call", "text": "{trigger}, talking on phone, standing, one hand on hip, simple background"},
+        {"name": "waving_hello", "text": "{trigger}, waving hello, cheerful smile, bright background, flat vector style"},
+        {"name": "sleeping_sofa", "text": "{trigger}, sleeping on a sofa, peaceful expression, blanket, cozy atmosphere"}
+      ]
+    },
+    {
+      "name": "edge_cases",
+      "description": "Challenging poses and scenarios to test LoRA robustness",
+      "prompts": [
+        {"name": "extreme_closeup", "text": "{trigger}, extreme closeup of face, eyes in sharp detail, flat style"},
+        {"name": "from_above", "text": "{trigger}, viewed from above, looking up at viewer, foreshortened perspective"},
+        {"name": "from_below", "text": "{trigger}, viewed from below, looking down, dramatic angle"},
+        {"name": "sitting_cross_legged", "text": "{trigger}, sitting cross-legged on floor, hands on knees, frontal view"},
+        {"name": "arms_crossed", "text": "{trigger}, arms crossed, confident stance, slight smirk, flat illustration"},
+        {"name": "pointing_forward", "text": "{trigger}, pointing forward at viewer, determined expression, dynamic pose"},
+        {"name": "holding_umbrella", "text": "{trigger}, holding an umbrella, rainy scene, full body, flat style"},
+        {"name": "wearing_hat", "text": "{trigger}, wearing a wide-brim hat, half face in shadow, stylized illustration"},
+        {"name": "dual_expression", "text": "{trigger}, surprised expression, mouth slightly open, wide eyes, white background"},
+        {"name": "tiny_in_scene", "text": "{trigger}, small figure in a large landscape, mountain scenery, distant view, flat style"}
+      ]
+    }
+  ]
+}
