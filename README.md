@@ -1,5 +1,6 @@
 ---
 license: apache-2.0
+base_model: black-forest-labs/FLUX.1-dev
 tags:
   - lora
   - text-to-image
@@ -9,6 +10,9 @@ tags:
   - storytelling
   - shorts
   - runware
+  - flux
+  - flux-lora
+  - ai-toolkit
 language:
   - ko
   - en
@@ -29,9 +33,11 @@ Characters are designed with:
 These models are built to support short-form video production where a narrator tells a story over a series of generated images. Each LoRA trains a specific character so that it remains visually coherent across different scenes, emotions, and backgrounds.
 
 **Workflow:**
-1. Generate training images via [Runware AI](https://runware.ai/)
-2. Train LoRA on character-specific image set
-3. Use LoRA at inference time to keep character consistent across scenes
+1. Generate or collect training images
+2. Preprocess + caption with Florence-2
+3. Train LoRA with ai-toolkit on RunPod/Colab
+4. Validate locally with MFLUX
+5. Deploy to HuggingFace + Runware AI
 
 ## Models
 
@@ -43,22 +49,58 @@ These models are built to support short-form video production where a narrator t
 
 ```python
 # Example using diffusers
-from diffusers import StableDiffusionPipeline
+from diffusers import FluxPipeline
 import torch
 
-pipe = StableDiffusionPipeline.from_pretrained("base-model-id", torch_dtype=torch.float16)
+pipe = FluxPipeline.from_pretrained("black-forest-labs/FLUX.1-dev", torch_dtype=torch.bfloat16)
 pipe.load_lora_weights("baleenme/story-shorts-character-lora", weight_name="character_name.safetensors")
 
 prompt = "TRIGGER_WORD, flat illustration, simple linework, white background, smiling"
-image = pipe(prompt).images[0]
+image = pipe(prompt, num_inference_steps=20, guidance_scale=4.0).images[0]
+```
+
+## Local Validation (Apple Silicon)
+
+```bash
+# Using MFLUX (MLX-native)
+mflux-generate \
+  --prompt "TRIGGER_WORD, front view, neutral expression, white background" \
+  --model dev \
+  --lora-paths path/to/lora.safetensors \
+  --lora-scales 0.8 \
+  --steps 20 \
+  -q 8
+
+# Or use the evaluation script with test prompts
+python scripts/evaluate_lora.py path/to/lora.safetensors --trigger "TRIGGER_WORD"
+```
+
+## Runware API
+
+```python
+from runware import Runware
+
+runware = Runware(api_key="YOUR_KEY")
+await runware.connect()
+
+result = await runware.imageInference(
+    positivePrompt="TRIGGER_WORD, reading a book in a cafe, flat illustration style",
+    model="runware:101@1",
+    lora=[{"model": "your-lora-air", "weight": 0.8}],
+    height=1024,
+    width=1024,
+)
 ```
 
 ## Training Details
 
+- **Base model:** [FLUX.1 Dev](https://huggingface.co/black-forest-labs/FLUX.1-dev)
+- **Training tool:** [ai-toolkit](https://github.com/ostris/ai-toolkit) (ostris)
+- **Captioning:** Florence-2 (natural language) + WD14 (booster tags)
 - **Image style:** Flat vector illustration, minimal linework
-- **Training tool:** Runware AI
-- **Image count per character:** ~20–50 curated images
-- **Base model:** *(varies per character, listed per model)*
+- **Image count per character:** 15–25 curated images
+- **LoRA rank:** 16
+- **Steps:** 4000–8000
 
 ## License
 
