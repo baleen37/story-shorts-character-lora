@@ -1,0 +1,53 @@
+# Training data (raw images can be large)
+datasets/*/raw/*.png
+datasets/*/raw/*.jpg
+datasets/*/raw/*.jpeg
+datasets/*/raw/*.webp
+
+# Processed images (reproducible from raw)
+datasets/*/processed/*.png
+!datasets/*/processed/.gitkeep
+
+# Model checkpoints (large binary files)
+models/checkpoints/*.safetensors
+models/checkpoints/*.ckpt
+models/checkpoints/*.pt
+!models/checkpoints/.gitkeep
+
+# Validation results (generated images)
+validation/results/*.png
+validation/results/*.jpg
+!validation/results/.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Tensorboard
+runs/
+logs/
