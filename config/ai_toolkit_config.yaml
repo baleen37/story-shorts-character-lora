@@ -1,0 +1,83 @@
+# ai-toolkit (ostris) Flux LoRA training config template
+# Docs: https://github.com/ostris/ai-toolkit
+#
+# Usage:
+#   1. Copy this file and fill in paths/trigger word
+#   2. On RunPod/Colab with ai-toolkit installed:
+#      python run.py config/my_character_config.yaml
+
+job: extension
+config:
+  name: "character_lora_v1"  # Change per character
+  process:
+    - type: "sd_trainer"
+      training_folder: "output"
+      device: cuda:0
+
+      # ---- Network (LoRA) ----
+      network:
+        type: "lora"
+        linear: 16           # rank
+        linear_alpha: 16     # alpha (= rank for stability)
+
+      # ---- Save ----
+      save:
+        dtype: float16
+        save_every: 250      # checkpoint every 250 steps
+        max_step_saves_to_keep: 4
+
+      # ---- Dataset ----
+      datasets:
+        - folder_path: "/path/to/datasets/my_character/processed"  # CHANGE THIS
+          caption_ext: "txt"
+          caption_dropout_rate: 0.05
+          shuffle_tokens: false
+          cache_latents_to_disk: true
+          resolution: [512, 768, 1024]  # aspect ratio bucketing
+
+      # ---- Training ----
+      train:
+        batch_size: 1                   # 1 for 12GB, 2 for 16GB, 4 for 24GB+
+        steps: 4000                     # 4000-8000 for characters
+        gradient_accumulation_steps: 1
+        train_unet: true
+        train_text_encoder: false
+        gradient_checkpointing: true
+        noise_scheduler: "flowmatch"
+        optimizer: "adamw8bit"
+        lr: 1e-4                        # 2.5e-5 to 1e-4 for characters
+        ema_config:
+          use_ema: true
+          ema_decay: 0.99
+        dtype: bf16
+
+      # ---- Model ----
+      model:
+        name_or_path: "black-forest-labs/FLUX.1-dev"
+        is_flux: true
+        quantize: true  # fp8 to save VRAM
+
+      # ---- Sampling (validation during training) ----
+      sample:
+        sampler: "flowmatch"
+        sample_every: 250
+        width: 1024
+        height: 1024
+        prompts:
+          - "{trigger}, front view, neutral expression, white background, flat illustration"
+          - "{trigger}, three-quarter view, slight smile, simple background, flat style"
+          - "{trigger}, full body, standing pose, white background, clean linework"
+          - "{trigger}, sitting and reading a book, cozy room, flat illustration"
+        neg: ""
+        seed: 42
+        walk_seed: true
+        guidance_scale: 4
+        sample_steps: 20
+
+      # ---- Trigger Word ----
+      # Replace {trigger} in sample prompts and captions with this:
+      trigger_word: "ohwx_char"  # CHANGE THIS per character
+
+meta:
+  name: "Story Shorts Character LoRA"
+  version: "1.0"
