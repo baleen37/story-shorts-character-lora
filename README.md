@@ -1,6 +1,6 @@
 ---
 license: apache-2.0
-base_model: black-forest-labs/FLUX.1-dev
+base_model: black-forest-labs/FLUX.2-klein-base-4B
 tags:
   - lora
   - text-to-image
@@ -12,7 +12,8 @@ tags:
   - runware
   - flux
   - flux-lora
-  - ai-toolkit
+  - mflux
+  - flux2
 language:
   - ko
   - en
@@ -35,8 +36,8 @@ These models are built to support short-form video production where a narrator t
 **Workflow:**
 1. Generate or collect training images
 2. Preprocess + caption with Florence-2
-3. Train LoRA with ai-toolkit on RunPod/Colab
-4. Validate locally with MFLUX
+3. Train LoRA with mflux on Mac (Apple Silicon)
+4. Validate locally with mflux
 5. Deploy to HuggingFace + Runware AI
 
 ## Models
@@ -52,7 +53,7 @@ These models are built to support short-form video production where a narrator t
 from diffusers import FluxPipeline
 import torch
 
-pipe = FluxPipeline.from_pretrained("black-forest-labs/FLUX.1-dev", torch_dtype=torch.bfloat16)
+pipe = FluxPipeline.from_pretrained("black-forest-labs/FLUX.2-klein-base-4B", torch_dtype=torch.bfloat16)
 pipe.load_lora_weights("baleenme/story-shorts-character-lora", weight_name="character_name.safetensors")
 
 prompt = "TRIGGER_WORD, flat illustration, simple linework, white background, smiling"
@@ -65,11 +66,10 @@ image = pipe(prompt, num_inference_steps=20, guidance_scale=4.0).images[0]
 # Using MFLUX (MLX-native)
 mflux-generate \
   --prompt "TRIGGER_WORD, front view, neutral expression, white background" \
-  --model dev \
+  --model flux2-klein-base-4b \
   --lora-paths path/to/lora.safetensors \
   --lora-scales 0.8 \
-  --steps 20 \
-  -q 8
+  --steps 20
 
 # Or use the evaluation script with test prompts
 python scripts/evaluate_lora.py path/to/lora.safetensors --trigger "TRIGGER_WORD"
@@ -85,7 +85,7 @@ await runware.connect()
 
 result = await runware.imageInference(
     positivePrompt="TRIGGER_WORD, reading a book in a cafe, flat illustration style",
-    model="runware:101@1",
+    model="runware:400@5",
     lora=[{"model": "your-lora-air", "weight": 0.8}],
     height=1024,
     width=1024,
@@ -94,13 +94,13 @@ result = await runware.imageInference(
 
 ## Training Details
 
-- **Base model:** [FLUX.1 Dev](https://huggingface.co/black-forest-labs/FLUX.1-dev)
-- **Training tool:** [ai-toolkit](https://github.com/ostris/ai-toolkit) (ostris)
-- **Captioning:** Florence-2 (natural language) + WD14 (booster tags)
+- **Base model:** [FLUX.2 Klein 4B](https://huggingface.co/black-forest-labs/FLUX.2-klein-base-4B)
+- **Training tool:** [mflux](https://github.com/filipstrand/mflux)
+- **Captioning:** Florence-2 (natural language)
 - **Image style:** Flat vector illustration, minimal linework
 - **Image count per character:** 15–25 curated images
 - **LoRA rank:** 16
-- **Steps:** 4000–8000
+- **Steps:** 100 epochs (≈2500–4000 steps)
 
 ## License
 
