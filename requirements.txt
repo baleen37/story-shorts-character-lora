@@ -4,24 +4,17 @@ opencv-python>=4.8.0
 numpy>=1.24.0
 
 # === Captioning ===
-# Florence-2: auto-installed via transformers
-# WD14: uses onnxruntime
 transformers>=4.44.0
 onnxruntime>=1.16.0
 
-# === Training (RunPod/Colab only, not needed locally) ===
-# Install ai-toolkit separately on training machine:
-#   git clone https://github.com/ostris/ai-toolkit
-#   cd ai-toolkit && pip install -r requirements.txt
-
-# === Local Validation (Mac) ===
-# Install MFLUX separately:
-#   pip install mflux
+# === Training (Mac MLX native) ===
+mflux>=0.16.5
 
 # === Inference & Deployment ===
 huggingface-hub>=0.20.0
 safetensors>=0.4.0
 runware>=0.5.0
+python-dotenv>=1.0.0
 
 # === Utilities ===
 rich>=13.0.0
