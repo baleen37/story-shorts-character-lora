@@ -51,3 +51,11 @@ Thumbs.db
 # Tensorboard
 runs/
 logs/
+
+# Environment variables (API keys)
+.env
+.env.*
+!.env.example
+
+# mflux training output
+train_*/
